@@ -1,0 +1,58 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Vigenere
+{
+    private $key;
+
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
+
+    private function generateKey($length)
+    {
+        $key = '';
+        $keyLength = strlen($this->key);
+
+        for ($i = 0; $i < $length; $i++) {
+            $key .= $this->key[$i % $keyLength];
+        }
+
+        return $key;
+    }
+
+    public function encrypt($text)
+    {
+        $text = strtolower($text);
+        $textLength = strlen($text);
+        $key = $this->generateKey($textLength);
+        $encryptedText = '';
+
+        for ($i = 0; $i < $textLength; $i++) {
+            $textChar = ord($text[$i]) - ord('a');
+            $keyChar = ord($key[$i]) - ord('a');
+            $encryptedChar = chr(((($textChar + $keyChar) % 26) + ord('a')));
+            $encryptedText .= $encryptedChar;
+        }
+
+        return $encryptedText;
+    }
+
+    public function decrypt($encryptedText)
+    {
+        $encryptedText = strtolower($encryptedText);
+        $textLength = strlen($encryptedText);
+        $key = $this->generateKey($textLength);
+        $decryptedText = '';
+
+        for ($i = 0; $i < $textLength; $i++) {
+            $textChar = ord($encryptedText[$i]) - ord('a');
+            $keyChar = ord($key[$i]) - ord('a');
+            $decryptedChar = chr((((($textChar - $keyChar) + 26) % 26) + ord('a')));
+            $decryptedText .= $decryptedChar;
+        }
+
+        return $decryptedText;
+    }
+}
